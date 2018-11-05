@@ -1,0 +1,27 @@
+{
+  "name": "Koa-Service-Layer",
+  "version": "0.0.1",
+  "description": "Implementation of the design pattern \"Service Layer\" for Koa2",
+  "main": "src/index.js",
+  "author": "Maksym <maxwell88soltyk@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "npm test",
+    "build": "babel src -d dist; cp README.md dist/README.md"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/88Maxwell/Koa-Service-Layer.git"
+  },
+  "private": true,
+  "keywords": [
+    "koa",
+    "service",
+    "architecture",
+    "service layer"
+  ],
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0"
+  }
+}
