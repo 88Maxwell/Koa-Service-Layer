@@ -17,23 +17,23 @@ export default class ServiceLayer {
 
     useService(ServiceClass) {
         return async ctx => {
-            const service = new ServiceClass();
-            const validArgs = this._executeRules(service, ctx);
+            const validArgs = await this._executeRules(ServiceClass, ctx);
             const startTime = Date.now();
-            const result = service.execute(validArgs);
+            const service = new ServiceClass();
+            const data = await service.execute(validArgs);
 
-            return this._handleService({ ctx, result, meta: { startTime } })
+            return this._handleService({ ctx, data, meta: { startTime } })
         }
     }
 
-    async _executeRules(service, ctx) {
+    async _executeRules(ServiceClass, ctx) {
         let changedCtx = ctx;
 
         for (const rule of this.rules) {
-            const ruleArgs = service[rule.name];
+            const ruleArgs = ServiceClass[rule.name];
             if (ruleArgs) {
                 changedCtx = await rule.body(changedCtx, ruleArgs);
-            } else if (!service[rule.name] && rule.required) {
+            } else if (!ServiceClass[rule.name] && rule.required) {
                 throw new Exception({
                     code: "RULE_IS_REQUIRED",
                     fields: {
@@ -43,9 +43,9 @@ export default class ServiceLayer {
             }
         }
     }
-    async _handleService({ ctx, result }) {
+    
+    _handleService({ ctx, data }) {
         try {
-            const data = await result;
             ctx.body = { status: 200, data };
         } catch (error) {
             if (error instanceof Exception) {
