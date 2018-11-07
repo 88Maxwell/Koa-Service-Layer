@@ -1,6 +1,6 @@
 {
-  "name": "Koa-Service-Layer",
-  "version": "0.1.0",
+  "name": "koa-service-layer",
+  "version": "0.1.1",
   "description": "Implementation of the design pattern \"Service Layer\" for Koa2",
   "main": "dist/index.js",
   "author": "Maksym <maxwell88soltyk@gmail.com>",
