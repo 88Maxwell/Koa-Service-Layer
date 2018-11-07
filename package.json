@@ -6,7 +6,7 @@
   "author": "Maksym <maxwell88soltyk@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "babel src -d dist; cp README.md dist/README.md"
+    "build": "babel src -d dist"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   ],
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0"
   },
   "dependencies": {

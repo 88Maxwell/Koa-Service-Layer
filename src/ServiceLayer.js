@@ -46,7 +46,7 @@ export default class ServiceLayer {
     
     _handleService({ ctx, data }) {
         try {
-            ctx.body = { status: 200, data };
+            ctx.body = { status: 200, ...data };
         } catch (error) {
             if (error instanceof Exception) {
                 res.send({

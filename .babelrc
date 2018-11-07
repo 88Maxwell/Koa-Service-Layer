@@ -9,5 +9,6 @@
                 "loose": true
             }
         ]
-    ]
+    ],
+    "plugins": ["transform-object-rest-spread"]
 }
