@@ -54,7 +54,7 @@ class ServiceLayer {
     async _handleService({ ctx, result }) {
         try {
             const data = await result;
-            ctx.res.end({ status: 200, data });
+            ctx.body = { status: 200, data };
         } catch (error) {
             if (error instanceof _Exception2.default) {
                 res.send({

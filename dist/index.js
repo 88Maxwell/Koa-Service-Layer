@@ -1,6 +1,7 @@
 'use strict';
 
 exports.__esModule = true;
+exports.ServiceLayer = exports.Service = exports.Exception = undefined;
 
 var _Exception = require('./Exception');
 
@@ -16,8 +17,6 @@ var _ServiceLayer2 = _interopRequireDefault(_ServiceLayer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = {
-    Exception: _Exception2.default,
-    Service: _Service2.default,
-    ServiceLayer: _ServiceLayer2.default
-};
+exports.Exception = _Exception2.default;
+exports.Service = _Service2.default;
+exports.ServiceLayer = _ServiceLayer2.default;
