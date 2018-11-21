@@ -40,11 +40,10 @@ class ServiceLayer {
         for (const rule of this.rules) {
             const ruleArgs = ServiceClass[rule.name];
             const { name, body, type } = rule;
-
-            if (!ServiceClass[name] && type === "required") {
-                throw new _Exception2.default({ code: "RULE_IS_REQUIRED", fields: { rule: name } });
-            } else {
+            if (type) {
                 changedCtx = await body(changedCtx, ruleArgs);
+            } else if (!ServiceClass[name] && type === "required") {
+                throw new _Exception2.default({ code: "RULE_IS_REQUIRED", fields: { rule: name } });
             }
         }
     }
