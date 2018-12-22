@@ -1,8 +1,7 @@
-import Exception from './Exception';
+import Exception from "./Exception";
 
 export default class ServiceLayer {
     constructor({ rules }) {
-        this.logger = logger;
         this.rules = rules;
     }
 
@@ -17,13 +16,14 @@ export default class ServiceLayer {
             } catch (error) {
                 if (error instanceof Exception) {
                     ctx.body = { status: 500, error: error.toHash() };
-
                 } else {
-                    ctx.body = { status: 500, error: { code: 'UNKNOWN_ERROR' } };
+                    ctx.body = {
+                        status: 500,
+                        error: { code: "UNKNOWN_ERROR" }
+                    };
                 }
-
             }
-        }
+        };
     }
 
     async _executeRules(ServiceClass, ctx) {
@@ -35,9 +35,11 @@ export default class ServiceLayer {
             if (type) {
                 changedCtx = await body(changedCtx, ruleArgs);
             } else if (!ServiceClass[name] && type === "required") {
-                throw new Exception({ code: "RULE_IS_REQUIRED", fields: { rule: name } });
+                throw new Exception({
+                    code: "RULE_IS_REQUIRED",
+                    fields: { rule: name }
+                });
             }
         }
     }
 }
-
