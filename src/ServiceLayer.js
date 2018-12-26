@@ -1,7 +1,7 @@
 import Exception from "./Exception";
 
 export default class ServiceLayer {
-    constructor({ rules }) {
+    constructor({ rules = [] }) {
         this.rules = rules;
     }
 
@@ -12,7 +12,7 @@ export default class ServiceLayer {
                 const service = new ServiceClass();
                 const data = await service.execute(validArgs);
 
-                ctx.body = { status: 200, ...data };
+                ctx.body = { status: 200, data };
             } catch (error) {
                 if (error instanceof Exception) {
                     ctx.body = { status: 500, error: error.toHash() };
@@ -28,12 +28,14 @@ export default class ServiceLayer {
 
     async _executeRules(ServiceClass, ctx) {
         let changedCtx = ctx;
+        
         // rules type can be required, epty, hidden
         for (const rule of this.rules) {
             const ruleArgs = ServiceClass[rule.name];
-            const { name, body, type } = rule;
+            const { name, execute, type } = rule;
+
             if (type) {
-                changedCtx = await body(changedCtx, ruleArgs);
+                changedCtx = await execute(changedCtx, ruleArgs);
             } else if (!ServiceClass[name] && type === "required") {
                 throw new Exception({
                     code: "RULE_IS_REQUIRED",
@@ -41,5 +43,7 @@ export default class ServiceLayer {
                 });
             }
         }
+
+        return changedCtx;
     }
 }
