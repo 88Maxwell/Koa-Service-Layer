@@ -10,7 +10,7 @@ export default class ServiceLayer {
             try {
                 const validArgs = await this._executeRules(ServiceClass, ctx);
                 const service = new ServiceClass();
-                const data = await service.execute(validArgs);
+                const data = await service.runExecutor(validArgs);
 
                 ctx.body = { status: 200, data };
             } catch (error) {

@@ -1,8 +1,6 @@
-// import Exception from './Exception';
-
 export default class Service {
-    async execute(args){
-        const result = await this.body(args);
+    async runExecutor(args){
+        const result = await this.execute(args);
 
         return result;
     }
