@@ -5,6 +5,7 @@
         "@babel/plugin-proposal-object-rest-spread",
         "@babel/plugin-transform-modules-commonjs",
         "@babel/plugin-transform-parameters",
-        "@babel/plugin-transform-regenerator"
+        "@babel/plugin-transform-regenerator",
+        "@babel/plugin-transform-runtime"
     ]
 }

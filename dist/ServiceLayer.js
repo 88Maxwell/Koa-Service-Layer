@@ -1,23 +1,21 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
 
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
+
 var _Exception = _interopRequireDefault(require("./Exception"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 var ServiceLayer =
 /*#__PURE__*/
@@ -25,13 +23,11 @@ function () {
   function ServiceLayer(_ref) {
     var _ref$rules = _ref.rules,
         rules = _ref$rules === void 0 ? [] : _ref$rules;
-
-    _classCallCheck(this, ServiceLayer);
-
+    (0, _classCallCheck2.default)(this, ServiceLayer);
     this.rules = rules;
   }
 
-  _createClass(ServiceLayer, [{
+  (0, _createClass2.default)(ServiceLayer, [{
     key: "useService",
     value: function useService(ServiceClass) {
       var _this = this;
@@ -39,11 +35,11 @@ function () {
       return (
         /*#__PURE__*/
         function () {
-          var _ref2 = _asyncToGenerator(
+          var _ref2 = (0, _asyncToGenerator2.default)(
           /*#__PURE__*/
-          regeneratorRuntime.mark(function _callee(ctx) {
+          _regenerator.default.mark(function _callee(ctx) {
             var validArgs, service, data;
-            return regeneratorRuntime.wrap(function _callee$(_context) {
+            return _regenerator.default.wrap(function _callee$(_context) {
               while (1) {
                 switch (_context.prev = _context.next) {
                   case 0:
@@ -102,12 +98,12 @@ function () {
   }, {
     key: "_executeRules",
     value: function () {
-      var _executeRules2 = _asyncToGenerator(
+      var _executeRules2 = (0, _asyncToGenerator2.default)(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee2(ServiceClass, ctx) {
+      _regenerator.default.mark(function _callee2(ServiceClass, ctx) {
         var changedCtx, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, rule, ruleArgs, name, execute, type;
 
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        return _regenerator.default.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
@@ -212,7 +208,6 @@ function () {
       return _executeRules;
     }()
   }]);
-
   return ServiceLayer;
 }();
 
