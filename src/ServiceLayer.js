@@ -17,6 +17,7 @@ export default class ServiceLayer {
                 if (error instanceof Exception) {
                     ctx.body = { status: 500, error: error.toHash() };
                 } else {
+                    console.log("KOA SERVICE LAYER: \n\t", error);
                     ctx.body = {
                         status: 500,
                         error: { code: "UNKNOWN_ERROR" }
