@@ -82,6 +82,9 @@ function () {
                     }
 
                   case 14:
+                    return _context.abrupt("return", ctx.body);
+
+                  case 15:
                   case "end":
                     return _context.stop();
                 }

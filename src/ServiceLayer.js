@@ -24,6 +24,7 @@ export default class ServiceLayer {
                     };
                 }
             }
+            return ctx.body;
         };
     }
 
