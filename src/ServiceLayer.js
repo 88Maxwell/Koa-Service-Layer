@@ -2,7 +2,9 @@ import Exception from "./Exception";
 
 export default class ServiceLayer {
     constructor(options = {}) {
-        const { rules } = options;
+        const { rules, resolver } = options;
+
+        this.resolver = resolver;
         this.rules = rules && rules.length ? rules : [];
     }
 
@@ -13,42 +15,63 @@ export default class ServiceLayer {
                 const service = new ServiceClass();
                 const data = await service.runExecutor(validArgs);
 
-                ctx.body = { status: 200, data };
+                return this.resolve.bind(ctx, { status: 200, data })();
             } catch (error) {
                 if (error instanceof Exception) {
-                    ctx.body = { status: 500, error: error.toHash() };
-                } else {
-                    console.log("KOA SERVICE LAYER: \n\t", error);
-                    ctx.body = {
-                        status: 500,
-                        error: { code: "UNKNOWN_ERROR" }
-                    };
+                    return this.resolve.bind(ctx, { status: 500, error: error.toHash() })();
                 }
+                console.log("KOA SERVICE LAYER: \n\t", error);
+
+                return this.resolve.bind(ctx, { status: 500, error: { code: "UNKNOWN_ERROR" } })();
             }
-            return ctx.body;
         };
     }
 
     async _executeRules(ServiceClass, ctx) {
         let changedCtx = ctx;
 
-        // rules type can be required, epty, hidden
+        // rules type can be required, custom, hidden
         if (this.rules) {
-            for (const rule of this.rules) {
-                const ruleArgs = ServiceClass[rule.name];
-                const { name, execute, type } = rule;
-
-                if (type) {
-                    changedCtx = await execute(changedCtx, ruleArgs);
-                } else if (!ServiceClass[name] && type === "required") {
+            for (const { name, execute, type } of this.rules) {
+                if (!name || !execute || !type) {
                     throw new Exception({
-                        code: "RULE_IS_REQUIRED",
-                        fields: { rule: name }
+                        code   : "RULES_EXEPTION",
+                        fields : {}
                     });
                 }
-            }
-        }
 
-        return changedCtx;
+                const ruleArgs = ServiceClass[name];
+
+                switch (type) {
+                    case "hidden":
+                        changedCtx = await execute(changedCtx);
+                        break;
+
+                    case "required":
+                        if (!ruleArgs) {
+                            throw new Exception({
+                                code   : "RULE_IS_REQUIRED",
+                                fields : { rule: name }
+                            });
+                        }
+                        changedCtx = await execute(changedCtx, ruleArgs);
+                        break;
+
+                    case "custom":
+                        if (ruleArgs) {
+                            changedCtx = await execute(changedCtx, ruleArgs);
+                        }
+                        break;
+
+                    default:
+                        throw new Exception({
+                            code   : "UNEXISTED_RULE_TYPE",
+                            fields : { type }
+                        });
+                }
+            }
+
+            return changedCtx;
+        }
     }
 }

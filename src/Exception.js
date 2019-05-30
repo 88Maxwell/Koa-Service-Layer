@@ -1,11 +1,11 @@
-import pointer from 'json-pointer';
-import rename from 'rename-keys';
+import pointer from "json-pointer";
+import rename from "rename-keys";
 
 export default class Exception extends Error {
     constructor(data) {
         super();
-        if (!data.fields) throw new Error('FIELDS_REQUIRED');
-        if (!data.code) throw new Error('MESSAGE_REQUIRED');
+        if (!data.fields) throw new Error("FIELDS_REQUIRED");
+        if (!data.code) throw new Error("MESSAGE_REQUIRED");
 
         const fields = pointer.dict(data.fields);
 
