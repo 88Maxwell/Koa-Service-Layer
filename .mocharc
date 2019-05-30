@@ -1,0 +1,6 @@
+# mocha.opts
+
+--timeout 15000 
+--require @babel/register
+--ui qunit tests/unit/**/*.js 
+--exit
