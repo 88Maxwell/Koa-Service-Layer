@@ -15,14 +15,14 @@ export default class ServiceLayer {
                 const service = new ServiceClass();
                 const data = await service.runExecutor(validArgs);
 
-                return this.resolve.bind(ctx, { status: 200, data })();
+                return this.resolver.bind(ctx, { status: 200, data })();
             } catch (error) {
                 if (error instanceof Exception) {
-                    return this.resolve.bind(ctx, { status: 500, error: error.toHash() })();
+                    return this.resolver.bind(ctx, { status: 500, error: error.toHash() })();
                 }
                 console.log("KOA SERVICE LAYER: \n\t", error);
 
-                return this.resolve.bind(ctx, { status: 500, error: { code: "UNKNOWN_ERROR" } })();
+                return this.resolver.bind(ctx, { status: 500, error: { code: "UNKNOWN_ERROR" } })();
             }
         };
     }
