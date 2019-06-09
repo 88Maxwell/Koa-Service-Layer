@@ -6,10 +6,9 @@
     "author": "Maksym <maxwell88soltyk@gmail.com>",
     "license": "MIT",
     "scripts": {
-        "build": "babel src -d dist",
+        "build": "MODE=production babel src -d dist",
         "test:unit": "MODE=test mocha --opts .mocharc",
-        "test:lint": "eslint --ext js src tests"
-
+        "test:lint": "MODE=test eslint --ext js src tests"
     },
     "repository": {
         "type": "git",

@@ -2,28 +2,42 @@ import Exception from "./Exception";
 
 export default class ServiceLayer {
     constructor(options = {}) {
-        const { rules, resolver } = options;
+        const {
+            rules
+            // resolver
+        } = options;
 
-        this.resolver = resolver;
+        // this.resolver = resolver;
         this.rules = rules && rules.length ? rules : [];
     }
 
     useService(ServiceClass) {
         return async ctx => {
+            let result;
+
             try {
                 const validArgs = await this._executeRules(ServiceClass, ctx);
                 const service = new ServiceClass();
                 const data = await service.runExecutor(validArgs);
 
-                return this.resolver.bind(ctx, { status: 200, data })();
+                result = { status: 200, data };
             } catch (error) {
                 if (error instanceof Exception) {
-                    return this.resolver.bind(ctx, { status: 500, error: error.toHash() })();
-                }
-                console.log("KOA SERVICE LAYER: \n\t", error);
+                    // eslint-disable-next-line no-param-reassign
+                    result = { status: 500, error: error.toHash() };
+                } else {
+                    console.log("KOA SERVICE LAYER: \n\t", error);
 
-                return this.resolver.bind(ctx, { status: 500, error: { code: "UNKNOWN_ERROR" } })();
+                    result = { status: 500, error: { code: "UNKNOWN_ERROR" } };
+                }
             }
+            if (process.env.MODE !== "test") {
+                // eslint-disable-next-line no-param-reassign
+                ctx.body = result;
+            }
+
+            // return this.resolver.bind(ctx, result)();
+            return result;
         };
     }
 

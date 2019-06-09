@@ -1,15 +1,8 @@
 import { Service, ServiceLayer, Exception } from "../src";
 
-export const emptySL = new ServiceLayer({
-    resolver(data) {
-        return data;
-    }
-});
+export const emptySL = new ServiceLayer();
 
 export const requiredRulesSL = new ServiceLayer({
-    resolver(data) {
-        return data;
-    },
     rules : [
         {
             name    : "test",
@@ -20,9 +13,6 @@ export const requiredRulesSL = new ServiceLayer({
 });
 
 export const hiddenRulesSL = new ServiceLayer({
-    resolver(data) {
-        return data;
-    },
     rules : [
         {
             name    : "test",
@@ -33,9 +23,6 @@ export const hiddenRulesSL = new ServiceLayer({
 });
 
 export const customRulesSL = new ServiceLayer({
-    resolver(data) {
-        return data;
-    },
     rules : [
         {
             name    : "test",
@@ -46,9 +33,6 @@ export const customRulesSL = new ServiceLayer({
 });
 
 export const unexistRuleTypeSL = new ServiceLayer({
-    resolver(data) {
-        return data;
-    },
     rules : [
         {
             name    : "test",
@@ -59,9 +43,6 @@ export const unexistRuleTypeSL = new ServiceLayer({
 });
 
 export const ruleWithMissedFieldSL = new ServiceLayer({
-    resolver(data) {
-        return data;
-    },
     rules : [
         {
             execute : ctx => ctx
