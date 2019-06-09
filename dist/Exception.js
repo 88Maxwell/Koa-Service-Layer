@@ -33,8 +33,8 @@ function (_Error) {
 
     (0, _classCallCheck2.default)(this, Exception);
     _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Exception).call(this));
-    if (!data.fields) throw new Error('FIELDS_REQUIRED');
-    if (!data.code) throw new Error('MESSAGE_REQUIRED');
+    if (!data.fields) throw new Error("FIELDS_REQUIRED");
+    if (!data.code) throw new Error("MESSAGE_REQUIRED");
 
     var fields = _jsonPointer.default.dict(data.fields);
 

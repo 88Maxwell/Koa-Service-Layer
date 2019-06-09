@@ -105,3 +105,5 @@ The data object has the following fields:
 ### License
 
 <a name="license"></a>
+
+Licensed under the MIT license.
