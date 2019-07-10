@@ -11,6 +11,10 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"))
 
 var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
 
+var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
+
+var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
+
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
@@ -58,15 +62,20 @@ function () {
 
                   case 7:
                     data = _context.sent;
+
+                    if ((0, _typeof2.default)(data) === "object") {
+                      data = Array.isArray(data) ? (0, _toConsumableArray2.default)(data) : (0, _objectSpread2.default)({}, data);
+                    }
+
                     result = {
                       status: 200,
-                      data: (0, _objectSpread2.default)({}, data)
+                      data: data
                     };
-                    _context.next = 14;
+                    _context.next = 15;
                     break;
 
-                  case 11:
-                    _context.prev = 11;
+                  case 12:
+                    _context.prev = 12;
                     _context.t0 = _context["catch"](0);
 
                     if (_context.t0 instanceof _Exception.default) {
@@ -85,18 +94,18 @@ function () {
                       };
                     }
 
-                  case 14:
+                  case 15:
                     // eslint-disable-next-line no-param-reassign
                     ctx.body = result; // return this.resolver.bind(ctx, result)();
 
                     return _context.abrupt("return", result);
 
-                  case 16:
+                  case 17:
                   case "end":
                     return _context.stop();
                 }
               }
-            }, _callee, this, [[0, 11]]);
+            }, _callee, this, [[0, 12]]);
           }));
 
           return function (_x) {
