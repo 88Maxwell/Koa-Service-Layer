@@ -28,6 +28,12 @@ test("Positive : Run service", async () => {
     deepEqual(res, { status: 200, data: {} });
 });
 
+test("Positive : Run service with result array=[] ", async () => {
+    const res = await emptySL.useService(EmptyService)([]);
+
+    deepEqual(res, { status: 200, data: [] });
+});
+
 test("Positive : Run service, with hidden rule ", async () => {
     const res = await hiddenRulesSL.useService(EmptyService)({});
 
