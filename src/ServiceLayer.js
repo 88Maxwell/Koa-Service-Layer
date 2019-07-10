@@ -18,9 +18,14 @@ export default class ServiceLayer {
             try {
                 const validArgs = await this._executeRules(ServiceClass, ctx);
                 const service = new ServiceClass();
-                const data = await service.runExecutor(validArgs);
 
-                result = { status: 200, data: { ...data } };
+                let data = await service.runExecutor(validArgs);
+
+                if (typeof data === "object") {
+                    data = Array.isArray(data) ? [ ...data ] : { ...data };
+                }
+
+                result = { status: 200, data };
             } catch (error) {
                 if (error instanceof Exception) {
                     // eslint-disable-next-line no-param-reassign
