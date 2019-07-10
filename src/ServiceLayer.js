@@ -20,7 +20,7 @@ export default class ServiceLayer {
                 const service = new ServiceClass();
                 const data = await service.runExecutor(validArgs);
 
-                result = { status: 200, data };
+                result = { status: 200, data: { ...data } };
             } catch (error) {
                 if (error instanceof Exception) {
                     // eslint-disable-next-line no-param-reassign
@@ -31,10 +31,9 @@ export default class ServiceLayer {
                     result = { status: 500, error: { code: "UNKNOWN_ERROR" } };
                 }
             }
-            if (process.env.MODE !== "test") {
-                // eslint-disable-next-line no-param-reassign
-                ctx.body = result;
-            }
+
+            // eslint-disable-next-line no-param-reassign
+            ctx.body = result;
 
             // return this.resolver.bind(ctx, result)();
             return result;
