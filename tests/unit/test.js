@@ -13,12 +13,16 @@ import {
     customRulesSL,
     unexistRuleTypeSL,
     ruleWithMissedFieldSL,
-    hiddenRulesWithServiceDataSL
+    hiddenRulesWithServiceDataSL,
+    customAfterRulesSL,
+    customAfterRulesWithMutateResultSL,
+    requiredAfterRulesSL,
+    hiddenAfterRulesSL
 } from "../mocks";
 
 const { deepEqual, equal, isAtLeast } = assert;
 
-suite("Service Layer tests");
+suite("Service Layer Tests");
 
 test("Positive : Is middleware ?", () => {
     const constructorName = emptySL.useService(EmptyService).constructor.name;
@@ -38,13 +42,13 @@ test("Positive : Run service with result array=[] ", async () => {
     deepEqual(res, { status: 200, data: [] });
 });
 
-test("Positive : Run service, with hidden rule ", async () => {
+test("Positive : Run service, with hidden before rule ", async () => {
     const res = await hiddenRulesSL.useService(EmptyService)({});
 
     deepEqual(res, { status: 200, data: { testHidden: true } });
 });
 
-test("Positive : Run service, with hidden rule that have service data object ", async () => {
+test("Positive : Run service, with hidden before rule that have service data object ", async () => {
     const res = await hiddenRulesWithServiceDataSL.useService(EmptyService)({});
 
     equal(res.status, 200);
@@ -57,20 +61,44 @@ test("Positive : Run service, with hidden rule that have service data object ", 
 });
 
 
-test("Positive : Run service, with required rule ", async () => {
+test("Positive : Run service, with required before rule ", async () => {
     const res = await requiredRulesSL.useService(RequiredRuleService)({});
 
     deepEqual(res, { status: 200, data: { testRequired: true } });
 });
 
-test("Positive : Run service, with execution of custom rule ", async () => {
+test("Positive : Run service, with execution of custom before rule ", async () => {
     const res = await customRulesSL.useService(CustomRuleService)({});
 
     deepEqual(res, { status: 200, data: { testCustom: true } });
 });
 
-test("Positive : Run service, without execution of custom rule ", async () => {
+test("Positive : Run service, without execution of custom before rule ", async () => {
     const res = await customRulesSL.useService(EmptyService)({});
+
+    deepEqual(res, { status: 200, data: {} });
+});
+
+test("Positive : Run service, with execution of custom after before rule ", async () => {
+    const res = await customAfterRulesSL.useService(CustomRuleService)({});
+
+    deepEqual(res, { status: 200, data: {} });
+});
+
+test("Positive : Run service, with execution of custom after rule and with mutate result ", async () => {
+    const res = await customAfterRulesWithMutateResultSL.useService(CustomRuleService)({});
+
+    deepEqual(res, { status: 200, data: {} });
+});
+
+test("Positive : Run service, with hidden after rule ", async () => {
+    const res = await hiddenAfterRulesSL.useService(EmptyService)({});
+
+    deepEqual(res, { status: 200, data: {} });
+});
+
+test("Positive : Run service, with required after rule ", async () => {
+    const res = await requiredAfterRulesSL.useService(RequiredRuleService)({});
 
     deepEqual(res, { status: 200, data: {} });
 });

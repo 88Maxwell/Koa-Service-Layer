@@ -5,23 +5,22 @@ import {
     rulesExeption,
     invalidArgumentExeption
 } from "./utils/exeptions";
+import { isFunction, deepClone } from "./utils/helpers";
 
 export default class ServiceLayer {
     constructor(resolver, argumentBuilder, rules = { before: [], after: [] }) {
-        if (!this._isFunction(resolver)) throw invalidArgumentExeption("resolver");
-        if (!this._isFunction(argumentBuilder)) throw invalidArgumentExeption("argumentBuilder");
+        if (!isFunction(resolver)) throw invalidArgumentExeption("resolver");
+        if (!isFunction(argumentBuilder)) throw invalidArgumentExeption("argumentBuilder");
 
         this.resolver =  resolver;
         this.argumentBuilder = argumentBuilder;
         this.beforeRules = rules.before;
         this.afterRules = rules.after;
-
-        this.useService = this.useService.bind(this);
     }
 
-    useService = ServiceClass =>
+    useService(ServiceClass) {
     // eslint-disable-next-line func-names
-        async function () {
+        return async function () {
             const ctx = this.argumentBuilder([ ...arguments ]);
 
             let result;
@@ -37,27 +36,30 @@ export default class ServiceLayer {
             };
 
             try {
-                const updatedArgs = await this._executeRules(executeRulesArgs);
+                const updatedContext = await this._executeRules(executeRulesArgs);
                 const service = new ServiceClass();
 
-                let data = await service.runExecutor(updatedArgs);
+                let data = await service.runExecutor.call(ctx, updatedContext);
 
                 if (typeof data === "object") {
                     data = Array.isArray(data) ? [ ...data ] : { ...data };
                 }
 
                 result = { status: 200, data };
-                serviceData.result = result;
+
                 await this._executeRules({
-                    ...executeRulesArgs,
-                    rules : this.afterRules
+                    rules       : this.afterRules,
+                    ServiceClass,
+                    ctx         : updatedContext,
+                    serviceData : { ...serviceData, result: deepClone(result) }
                 });
             } catch (error) {
                 result = this._errorCatchHandler(error);
             }
 
             return this.resolver.call(ctx, result);
-        };
+        }.bind(this);
+    }
 
     async _executeRules({ rules, ServiceClass, ctx, serviceData }) {
         let changedCtx = ctx;
@@ -65,19 +67,17 @@ export default class ServiceLayer {
         // rules type can be required, custom, hidden
         if (rules) {
             for (const rule of rules) {
-                const ruleArgs = ServiceClass[name];
+                const ruleArgs = ServiceClass[rule.name];
                 const executeArgs = [ changedCtx, ruleArgs, serviceData ];
 
                 changedCtx = await this._executeRule(rule, executeArgs);
             }
-
-            return changedCtx;
         }
+
+        return changedCtx;
     }
 
-    _executeRule = (rule, executeArgs) => {
-        const { name, execute, type } = rule;
-
+    _executeRule = ({ name, execute, type }, executeArgs) => {
         if (!name || !execute || !type) {
             throw rulesExeption();
         }
@@ -97,13 +97,13 @@ export default class ServiceLayer {
                 if (executeArgs[1]) {
                     return execute(...executeArgs);
                 }
-                break;
+
+                return executeArgs[0];
+
             default:
                 throw unexistedRuleTypeExeption(type);
         }
     }
-
-    _isFunction = func => func && func instanceof Function;
 
     _errorCatchHandler(error) {
         if (error instanceof Exception) {

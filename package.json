@@ -7,8 +7,10 @@
     "license": "MIT",
     "scripts": {
         "build": "MODE=production babel src -d build",
+        "test": "yarn test:lint && yarn test:unit && yarn test:coverage",
+        "test:lint": "MODE=test eslint --ext js src tests",
         "test:unit": "MODE=test mocha --opts .mocharc",
-        "test:lint": "MODE=test eslint --ext js src tests"
+        "test:coverage": "MODE=test nyc mocha --opts .mocharc"
     },
     "pre-commit": [
         "test:lint"
@@ -43,7 +45,8 @@
         "eslint-plugin-more": "^0.3.2",
         "eslint-plugin-prefer-spread": "^1.0.3",
         "livr": "^2.2.5",
-        "mocha": "^6.1.4"
+        "mocha": "^6.1.4",
+        "nyc": "^14.1.1"
     },
     "dependencies": {
         "json-pointer": "^0.6.0",

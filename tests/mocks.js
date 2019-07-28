@@ -1,67 +1,167 @@
+/* eslint-disable no-param-reassign */
 import { Service, ServiceLayer, Exception } from "../src";
 
-export const emptySL = new ServiceLayer();
+const testResolver = result => result;
+const koaArgumentBuilder = arrArgs => arrArgs[0];
 
-export const requiredRulesSL = new ServiceLayer({
-    rules : [
-        {
-            name    : "test",
-            type    : "required",
-            execute : (ctx, args) => ({ ...ctx, ...args })
-        }
-    ]
-});
+export const emptySL = new ServiceLayer(testResolver, koaArgumentBuilder);
 
-export const hiddenRulesSL = new ServiceLayer({
-    rules : [
-        {
-            name    : "test",
-            type    : "hidden",
-            execute : ctx => ({ ...ctx, testHidden: true })
-        }
-    ]
-});
+export const requiredRulesSL = new ServiceLayer(
+    testResolver,
+    koaArgumentBuilder,
+    {
+        before : [
+            {
+                name    : "test",
+                type    : "required",
+                execute : (ctx, args) => ({ ...ctx, ...args })
+            }
+        ]
+    }
+);
 
-export const hiddenRulesWithServiceDataSL = new ServiceLayer({
-    rules : [
-        {
-            name    : "test",
-            type    : "hidden",
-            execute : (ctx, _, serviceData) => ({
-                responceData : { ...ctx, testHidden: true },
-                serviceData
-            })
-        }
-    ]
-});
+export const hiddenRulesSL = new ServiceLayer(
+    testResolver,
+    koaArgumentBuilder,
+    {
+        before : [
+            {
+                name    : "test",
+                type    : "hidden",
+                execute : ctx => ({ ...ctx, testHidden: true })
+            }
+        ]
+    }
+);
 
-export const customRulesSL = new ServiceLayer({
-    rules : [
-        {
-            name    : "test",
-            type    : "custom",
-            execute : (ctx, args) => ({ ...ctx, ...args })
-        }
-    ]
-});
+export const hiddenRulesWithServiceDataSL = new ServiceLayer(
+    testResolver,
+    koaArgumentBuilder,
+    {
+        before : [
+            {
+                name    : "test",
+                type    : "hidden",
+                execute : (ctx, _, serviceData) => ({
+                    responceData : { ...ctx, testHidden: true },
+                    serviceData
+                })
+            }
+        ]
+    }
+);
 
-export const unexistRuleTypeSL = new ServiceLayer({
-    rules : [
-        {
-            name    : "test",
-            type    : "wrongType",
-            execute : ctx => ctx
-        }
-    ]
-});
+export const customRulesSL = new ServiceLayer(
+    testResolver,
+    koaArgumentBuilder,
+    {
+        before : [
+            {
+                name    : "test",
+                type    : "custom",
+                execute : (ctx, args) => ({ ...ctx, ...args })
+            }
+        ]
+    }
+);
 
-export const ruleWithMissedFieldSL = new ServiceLayer({
-    rules : [
-        {
-            execute : ctx => ctx
-        }
-    ]
-});
+export const unexistRuleTypeSL = new ServiceLayer(
+    testResolver,
+    koaArgumentBuilder,
+    {
+        before : [
+            {
+                name    : "test",
+                type    : "wrongType",
+                execute : ctx => ctx
+            }
+        ]
+    }
+);
+
+export const ruleWithMissedFieldSL = new ServiceLayer(
+    testResolver,
+    koaArgumentBuilder,
+    {
+        before : [
+            {
+                execute : ctx => ctx
+            }
+        ]
+    }
+);
+
+export const customAfterRulesSL = new ServiceLayer(
+    testResolver,
+    koaArgumentBuilder,
+    {
+        after : [
+            {
+                name    : "test",
+                type    : "custom",
+                execute : (ctx, args, serviceData) => ({
+                    ...ctx,
+                    ...args,
+                    ...serviceData
+                })
+            }
+        ]
+    }
+);
+
+export const customAfterRulesWithMutateResultSL = new ServiceLayer(
+    testResolver,
+    koaArgumentBuilder,
+    {
+        after : [
+            {
+                name    : "test",
+                type    : "custom",
+                execute : (ctx, args, serviceData) => {
+                    serviceData.result.data.some = "some";
+
+                    return { ...ctx, ...args };
+                }
+            }
+        ]
+    }
+);
+
+export const hiddenAfterRulesSL = new ServiceLayer(
+    testResolver,
+    koaArgumentBuilder,
+    {
+        after : [
+            {
+                name    : "test",
+                type    : "hidden",
+                execute : (ctx, args, serviceData) => ({
+                    ...ctx,
+                    ...args,
+                    ...serviceData
+                })
+            }
+        ]
+    }
+);
+
+export const requiredAfterRulesSL = new ServiceLayer(
+    testResolver,
+    koaArgumentBuilder,
+    {
+        after : [
+            {
+                name    : "test",
+                type    : "required",
+                execute : (ctx, args, serviceData) => ({
+                    ...ctx,
+                    ...args,
+                    ...serviceData
+                })
+            }
+        ]
+    }
+);
 
 export class EmptyService extends Service {
     execute(ctx) {

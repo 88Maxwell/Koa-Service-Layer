@@ -1,2 +1,4 @@
 node_modules/
 yarn.lock
+.coverage_tmp
+coverage_report
