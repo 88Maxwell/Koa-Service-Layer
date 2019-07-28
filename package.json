@@ -1,15 +1,18 @@
 {
-    "name": "koa-service-layer",
-    "version": "0.1.9",
+    "name": "service-layer",
+    "version": "0.2.0",
     "description": "Implementation of the design pattern \"Service Layer\" for Koa2",
-    "main": "dist/index.js",
+    "main": "build/index.js",
     "author": "Maksym <maxwell88soltyk@gmail.com>",
     "license": "MIT",
     "scripts": {
-        "build": "MODE=production babel src -d dist",
+        "build": "MODE=production babel src -d build",
         "test:unit": "MODE=test mocha --opts .mocharc",
         "test:lint": "MODE=test eslint --ext js src tests"
     },
+    "pre-commit": [
+        "test:lint"
+    ],
     "repository": {
         "type": "git",
         "url": "git+https://github.com/88Maxwell/Koa-Service-Layer.git"
@@ -44,6 +47,7 @@
     },
     "dependencies": {
         "json-pointer": "^0.6.0",
+        "pre-commit": "^1.2.2",
         "rename-keys": "^2.0.1"
     }
 }
