@@ -16,10 +16,13 @@ export default class ServiceLayer {
             let result;
 
             try {
-                const validArgs = await this._executeRules(ServiceClass, ctx);
+                const updatedArgs = await this._executeRules(ServiceClass, ctx, {
+                    serviceName : ServiceClass.name,
+                    startTime   : Date.now()
+                });
                 const service = new ServiceClass();
 
-                let data = await service.runExecutor(validArgs);
+                let data = await service.runExecutor(updatedArgs);
 
                 if (typeof data === "object") {
                     data = Array.isArray(data) ? [ ...data ] : { ...data };
@@ -45,7 +48,7 @@ export default class ServiceLayer {
         };
     }
 
-    async _executeRules(ServiceClass, ctx) {
+    async _executeRules(ServiceClass, ctx, serviceData) {
         let changedCtx = ctx;
 
         // rules type can be required, custom, hidden
@@ -62,7 +65,7 @@ export default class ServiceLayer {
 
                 switch (type) {
                     case "hidden":
-                        changedCtx = await execute(changedCtx);
+                        changedCtx = await execute(changedCtx, null, serviceData);
                         break;
 
                     case "required":
@@ -72,12 +75,12 @@ export default class ServiceLayer {
                                 fields : { rule: name }
                             });
                         }
-                        changedCtx = await execute(changedCtx, ruleArgs);
+                        changedCtx = await execute(changedCtx, ruleArgs, serviceData);
                         break;
 
                     case "custom":
                         if (ruleArgs) {
-                            changedCtx = await execute(changedCtx, ruleArgs);
+                            changedCtx = await execute(changedCtx, ruleArgs, serviceData);
                         }
                         break;
 

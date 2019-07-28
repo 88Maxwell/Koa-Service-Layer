@@ -22,6 +22,19 @@ export const hiddenRulesSL = new ServiceLayer({
     ]
 });
 
+export const hiddenRulesWithServiceDataSL = new ServiceLayer({
+    rules : [
+        {
+            name    : "test",
+            type    : "hidden",
+            execute : (ctx, _, serviceData) => ({
+                responceData : { ...ctx, testHidden: true },
+                serviceData
+            })
+        }
+    ]
+});
+
 export const customRulesSL = new ServiceLayer({
     rules : [
         {
@@ -57,7 +70,7 @@ export class EmptyService extends Service {
 }
 
 export class RequiredRuleService extends Service {
-    static test = { testRequired: true }
+    static test = { testRequired: true };
 
     execute(ctx) {
         return ctx;
@@ -65,7 +78,7 @@ export class RequiredRuleService extends Service {
 }
 
 export class CustomRuleService extends Service {
-    static test = { testCustom: true }
+    static test = { testCustom: true };
 
     execute(ctx) {
         return ctx;

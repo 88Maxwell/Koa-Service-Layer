@@ -1,4 +1,5 @@
-import { equal, deepEqual } from "assert";
+import { assert } from "chai";
+
 import {
     emptySL,
     EmptyService,
@@ -11,8 +12,11 @@ import {
     CustomRuleService,
     customRulesSL,
     unexistRuleTypeSL,
-    ruleWithMissedFieldSL
+    ruleWithMissedFieldSL,
+    hiddenRulesWithServiceDataSL
 } from "../mocks";
+
+const { deepEqual, equal, isAtLeast } = assert;
 
 suite("Service Layer tests");
 
@@ -39,6 +43,19 @@ test("Positive : Run service, with hidden rule ", async () => {
 
     deepEqual(res, { status: 200, data: { testHidden: true } });
 });
+
+test("Positive : Run service, with hidden rule that have service data object ", async () => {
+    const res = await hiddenRulesWithServiceDataSL.useService(EmptyService)({});
+
+    equal(res.status, 200);
+    deepEqual(res.data.responceData, { testHidden: true });
+    const { startTime, serviceName } = res.data.serviceData;
+
+    equal(serviceName, EmptyService.name);
+    isAtLeast(Date.now(), startTime);
+    isAtLeast(startTime + 100, Date.now());
+});
+
 
 test("Positive : Run service, with required rule ", async () => {
     const res = await requiredRulesSL.useService(RequiredRuleService)({});
@@ -79,9 +96,9 @@ test("Negative : Run service, with unexisted rule type ", async () => {
             code   : "UNEXISTED_RULE_TYPE",
             fields : { type: "wrongType" }
         }
+
     });
 });
-
 test("Negative : Run service, with required rule ", async () => {
     const res = await requiredRulesSL.useService(ExeptionRequiredRuleService)(
         {}
