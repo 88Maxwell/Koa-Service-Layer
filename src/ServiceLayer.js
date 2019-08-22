@@ -66,6 +66,7 @@ export default class ServiceLayer {
 
         // rules type can be required, custom, hidden
         if (rules) {
+            // eslint-disable-next-line no-unused-vars
             for (const rule of rules) {
                 const ruleArgs = ServiceClass[rule.name];
                 const executeArgs = [ changedCtx, ruleArgs, serviceData ];

@@ -1,5 +1,5 @@
 {
-    "name": "service-layer",
+    "name": "node-service-layer",
     "version": "0.2.1",
     "description": "Implementation of the design pattern \"Service Layer\"",
     "main": "build/index.js",
