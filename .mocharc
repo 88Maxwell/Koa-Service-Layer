@@ -1,6 +1,7 @@
 # mocha.opts
 
 --timeout 15000 
---require @babel/register
---ui qunit tests/unit/**/*.js 
+--project tsconfig.json
+--require ts-node/register
+--ui qunit tests/unit/**/*.ts 
 --exit

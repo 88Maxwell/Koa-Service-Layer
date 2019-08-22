@@ -6,11 +6,11 @@
     "author": "Maksym <maxwell88soltyk@gmail.com>",
     "license": "MIT",
     "scripts": {
-        "build": "MODE=production babel src -d build",
+        "build": "NODE_ENV=production tsc",
         "test": "yarn test:lint && yarn test:unit && yarn test:coverage",
-        "test:lint": "MODE=test eslint --ext js src tests",
-        "test:unit": "MODE=test mocha --opts .mocharc",
-        "test:coverage": "MODE=test nyc mocha --opts .mocharc"
+        "test:lint": "NODE_ENV=test eslint --ext ts src tests",
+        "test:unit": "NODE_ENV=test mocha --opts .mocharc",
+        "test:coverage": "NODE_ENV=test nyc mocha --opts .mocharc"
     },
     "pre-commit": [
         "test:lint"
@@ -20,37 +20,33 @@
         "url": "git+https://github.com/88Maxwell/Service-Layer.git"
     },
     "keywords": [
-        "koa",
         "service",
         "architecture",
         "service layer"
     ],
-    "devDependencies": {
-        "@babel/cli": "^7.2.3",
-        "@babel/core": "^7.4.5",
-        "@babel/node": "^7.4.5",
-        "@babel/plugin-proposal-class-properties": "^7.2.3",
-        "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
-        "@babel/plugin-transform-modules-commonjs": "^7.2.0",
-        "@babel/plugin-transform-parameters": "^7.2.0",
-        "@babel/plugin-transform-regenerator": "^7.0.0",
-        "@babel/plugin-transform-runtime": "^7.2.0",
-        "@babel/preset-env": "^7.2.3",
-        "@babel/runtime": "^7.4.5",
-        "babel-eslint": "^10.0.1",
-        "chai": "^4.2.0",
-        "eslint": "^5.16.0",
-        "eslint-config-backend": "github:88Maxwell/eslint-config-backend",
-        "eslint-plugin-import": "^2.17.3",
-        "eslint-plugin-more": "^0.3.2",
-        "eslint-plugin-prefer-spread": "^1.0.3",
-        "livr": "^2.2.5",
-        "mocha": "^6.1.4",
-        "nyc": "^14.1.1"
-    },
     "dependencies": {
         "json-pointer": "^0.6.0",
-        "pre-commit": "^1.2.2",
         "rename-keys": "^2.0.1"
+    },
+    "devDependencies": {
+        "@types/chai": "^4.2.0",
+        "@types/core-js": "^2.5.2",
+        "@types/mocha": "^5.2.7",
+        "@typescript-eslint/eslint-plugin": "^2.0.0",
+        "@typescript-eslint/parser": "^2.0.0",
+        "babel-eslint": "^10.0.2",
+        "chai": "^4.2.0",
+        "eslint": "^6.2.1",
+        "eslint-config-backend": "github:88Maxwell/eslint-config-backend",
+        "eslint-plugin-import": "^2.18.2",
+        "eslint-plugin-more": "^0.3.2",
+        "eslint-plugin-prefer-spread": "^1.0.3",
+        "livr": "^2.3.0",
+        "mocha": "^6.2.0",
+        "nyc": "^14.1.1",
+        "pre-commit": "^1.2.2",
+        "ts-mocha": "^6.0.0",
+        "ts-node": "^8.3.0",
+        "typescript": "^3.5.3"
     }
 }
