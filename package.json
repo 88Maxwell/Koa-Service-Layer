@@ -6,7 +6,7 @@
     "author": "Maksym <maxwell88soltyk@gmail.com>",
     "license": "MIT",
     "scripts": {
-        "build": "NODE_ENV=production tsc",
+        "build": "rm -rf build && NODE_ENV=production tsc",
         "test": "yarn test:lint && yarn test:unit && yarn test:coverage",
         "test:lint": "NODE_ENV=test eslint --ext ts src tests",
         "test:unit": "NODE_ENV=test mocha --opts .mocharc",
@@ -24,13 +24,10 @@
         "architecture",
         "service layer"
     ],
-    "dependencies": {
-        "json-pointer": "^0.6.0",
-        "rename-keys": "^2.0.1"
-    },
     "devDependencies": {
         "@types/chai": "^4.2.0",
         "@types/core-js": "^2.5.2",
+        "@types/json-pointer": "^1.0.30",
         "@types/mocha": "^5.2.7",
         "@typescript-eslint/eslint-plugin": "^2.0.0",
         "@typescript-eslint/parser": "^2.0.0",
@@ -48,5 +45,8 @@
         "ts-mocha": "^6.0.0",
         "ts-node": "^8.3.0",
         "typescript": "^3.5.3"
+    },
+    "dependencies": {
+        "json-pointer": "^0.6.0"
     }
 }

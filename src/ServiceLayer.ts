@@ -8,6 +8,7 @@ import {
 import { isFunction, deepClone } from "./utils/helpers";
 import Service from "./Service";
 
+
 export default class ServiceLayer {
     private resolver: Function;
     private argumentBuilder: Function;

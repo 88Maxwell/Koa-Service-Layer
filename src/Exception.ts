@@ -1,25 +1,32 @@
 import pointer from "json-pointer";
-import rename from "rename-keys";
+import { renameKeys } from "./utils/helpers";
+
+interface IErrorData {
+    fields: object;
+    code: string;
+    message?: string;
+}
+
+interface IToHash {
+    fields: object;
+    code: string;
+}
 
 export default class Exception extends Error {
-    fields:string;
+    fields: object;
     code: string;
     message: string;
 
-    constructor(data:any) {
+    constructor({ fields, code, message }: IErrorData) {
         super();
-        if (!data.fields) throw new Error("FIELDS_REQUIRED");
-        if (!data.code) throw new Error("MESSAGE_REQUIRED");
 
-        const fields = pointer.dict(data.fields);
-
-        this.fields = rename(fields, (str:string):string => str.substr(1));
-
-        this.code = data.code;
-        this.message = data.message;
+        this.fields = renameKeys(pointer.dict(fields), (str: string): string => str.substr(1));
+        this.code = code;
+        this.message = message;
+        this.toHash = this.toHash.bind(this)
     }
 
-    public toHash() {
+    public toHash(): IToHash {
         return {
             fields: this.fields,
             code: this.code

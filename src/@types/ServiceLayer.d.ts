@@ -1,4 +1,4 @@
-/ Type definitions for [~THE LIBRARY NAME~] [~OPTIONAL VERSION NUMBER~]
+// Type definitions for [~THE LIBRARY NAME~] [~OPTIONAL VERSION NUMBER~]
 // Project: [~THE PROJECT NAME~]
 // Definitions by: [~YOUR NAME~] <[~A URL FOR YOU~]>
 
@@ -25,37 +25,12 @@
  *~ loaded outside a module loader environment, declare that global here.
  *~ Otherwise, delete this declaration.
  */
-export as namespace ServiceLayer;
-
 /*~ This declaration specifies that the class constructor function
  *~ is the exported object from the file
  */
-export = ServiceLayer;
 
 /*~ Write your module's methods and properties in this class */
-declare class ServiceLayer {
-    private resolver: Function;
-    private argumentBuilder: Function;
-    private beforeRules: Array<ServiceLayer.Rule>;
-    private afterRules: Array<ServiceLayer.Rule>;
 
-    constructor(resolver: Function, argumentBuilder: Function, rules:ServiceLayer.RulesObject);
-
-    public useService(ServiceClass: Service):any;
-
-    private executeRules(args:ServiceLayer.ExecuteRuleAruments):any;
-    private executeRule(rule:ServiceLayer.Rule, executeArgs: any):any;
-    private errorCatchHandler(error):ServiceLayer.Exeption
-}
-
-/*~ If you want to expose types from your module as well, you can
- *~ place them in this block.
- *~
- *~ Note that if you decide to include this namespace, the module can be
- *~ incorrectly imported as a namespace object, unless
- *~ --esModuleInterop is turned on:
- *~   import * as x from '[~THE MODULE~]'; // WRONG! DO NOT DO THIS!
- */
 declare namespace ServiceLayer {
     export enum Type {
         required,
@@ -84,3 +59,20 @@ declare namespace ServiceLayer {
     }
   
 }
+
+declare class ServiceLayer {
+    private resolver: Function;
+    private argumentBuilder: Function;
+    private beforeRules: Array<ServiceLayer.Rule>;
+    private afterRules: Array<ServiceLayer.Rule>;
+
+    constructor(resolver: Function, argumentBuilder: Function, rules:ServiceLayer.RulesObject);
+
+    public useService(ServiceClass: Service):any;
+
+    private executeRules(args:ServiceLayer.ExecuteRuleAruments):any;
+    private executeRule(rule:ServiceLayer.Rule, executeArgs: any):any;
+    private errorCatchHandler(error):ServiceLayer.Exeption
+}
+
+export = ServiceLayer;
