@@ -4,18 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const json_pointer_1 = __importDefault(require("json-pointer"));
-const rename_keys_1 = __importDefault(require("rename-keys"));
+const helpers_1 = require("./utils/helpers");
 class Exception extends Error {
-    constructor(data) {
+    constructor({ fields, code, message }) {
         super();
-        if (!data.fields)
-            throw new Error("FIELDS_REQUIRED");
-        if (!data.code)
-            throw new Error("MESSAGE_REQUIRED");
-        const fields = json_pointer_1.default.dict(data.fields);
-        this.fields = rename_keys_1.default(fields, (str) => str.substr(1));
-        this.code = data.code;
-        this.message = data.message;
+        this.fields = helpers_1.renameKeys(json_pointer_1.default.dict(fields), (str) => str.substr(1));
+        this.code = code;
+        this.message = message;
+        this.toHash = this.toHash.bind(this);
     }
     toHash() {
         return {

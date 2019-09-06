@@ -1,5 +1,7 @@
 /* eslint-disable no-param-reassign */
-import { Service, ServiceLayer, Exception } from "../src";
+import Service from "../src/Service";
+import ServiceLayer from "../src/ServiceLayer";
+import Exception from "../src";
 
 const testResolver = result => result;
 const koaArgumentBuilder = arrArgs => arrArgs[0];

@@ -8,6 +8,42 @@ import {
 import { isFunction, deepClone } from "./utils/helpers";
 import Service from "./Service";
 
+type Dict = { [key: string]: Function };
+
+type Type = "required" | "custom" | "hidden";
+
+interface Constructable<T> {
+    new (): T;
+}
+interface Rule {
+    name: string;
+    type: Type;
+    execute: Function;
+}
+
+interface RulesObject {
+    before: Array<Rule>;
+    after: Array<Rule>;
+}
+
+interface ExecuteRuleAruments {
+    rules: Array<Rule>;
+    ServiceClass: Dict;
+    ctx: object;
+    serviceData: object;
+}
+
+interface Exeption {
+    status: number;
+    fields: object;
+}
+declare class IServiceLayer {
+    public useService(ServiceClass: Service): any;
+
+    private executeRules(args: ExecuteRuleAruments): any;
+    private executeRule(rule: Rule, executeArgs: any): any;
+    private errorCatchHandler(error): Exeption;
+}
 
 export default class ServiceLayer {
     private resolver: Function;
@@ -15,7 +51,7 @@ export default class ServiceLayer {
     private beforeRules: Array<Rule>;
     private afterRules: Array<Rule>;
 
-    constructor(resolver: Function, argumentBuilder: Function, rules = { before: [], after: [] }) {
+    constructor(resolver: Function, argumentBuilder: Function, rules: RulesObject = { before: [], after: [] }) {
         if (!isFunction(resolver)) throw invalidArgumentExeption("resolver");
         if (!isFunction(argumentBuilder)) throw invalidArgumentExeption("argumentBuilder");
 
@@ -25,15 +61,15 @@ export default class ServiceLayer {
         this.afterRules = rules.after;
     }
 
-    public useService(ServiceClass: Service) {
+    public useService(ServiceClass: Constructable<Service>) {
         // eslint-disable-next-line func-names
-        return async function() {
-            const ctx = this.argumentBuilder([...arguments]);
+        return async function(...args: Array<any>) {
+            const ctx = this.argumentBuilder(args);
 
             let result;
             const serviceData = {
                 startTime: Date.now(),
-                serviceName: ServiceClass.name
+                serviceName: ServiceClass.constructor.name
             };
             const executeRulesArgs = {
                 rules: this.beforeRules,
@@ -46,7 +82,7 @@ export default class ServiceLayer {
                 const updatedContext = await this.executeRules(executeRulesArgs);
                 const service = new ServiceClass();
 
-                let data = await service.runExecutor.call(ctx, updatedContext);
+                let data = await service.execute.call(ctx, updatedContext);
 
                 if (typeof data === "object") {
                     data = Array.isArray(data) ? [...data] : { ...data };
@@ -68,7 +104,7 @@ export default class ServiceLayer {
         }.bind(this);
     }
 
-    private async executeRules(argumens: { rules: Array<Rule>; ServiceClass: Service; ctx: any; serviceData: any }) {
+    private async executeRules({ rules, ServiceClass, ctx, serviceData }: ExecuteRuleAruments) {
         let changedCtx = ctx;
 
         // rules type can be required, custom, hidden
@@ -82,7 +118,7 @@ export default class ServiceLayer {
         }
     }
 
-    private executeRule = ({ name, execute, type }, executeArgs: any) => {
+    private executeRule = ({ name, execute, type }: Rule, executeArgs: any) => {
         if (!name || !execute || !type) {
             throw rulesExeption();
         }

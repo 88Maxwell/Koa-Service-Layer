@@ -48,13 +48,13 @@ class ServiceLayer {
     }
     useService(ServiceClass) {
         // eslint-disable-next-line func-names
-        return function () {
-            return __awaiter(this, arguments, void 0, function* () {
-                const ctx = this.argumentBuilder([...arguments]);
+        return function (...args) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const ctx = this.argumentBuilder(args);
                 let result;
                 const serviceData = {
                     startTime: Date.now(),
-                    serviceName: ServiceClass.name
+                    serviceName: ServiceClass.constructor.name
                 };
                 const executeRulesArgs = {
                     rules: this.beforeRules,
@@ -65,7 +65,7 @@ class ServiceLayer {
                 try {
                     const updatedContext = yield this.executeRules(executeRulesArgs);
                     const service = new ServiceClass();
-                    let data = yield service.runExecutor.call(ctx, updatedContext);
+                    let data = yield service.execute.call(ctx, updatedContext);
                     if (typeof data === "object") {
                         data = Array.isArray(data) ? [...data] : Object.assign({}, data);
                     }
@@ -84,7 +84,7 @@ class ServiceLayer {
             });
         }.bind(this);
     }
-    executeRules(argumens) {
+    executeRules({ rules, ServiceClass, ctx, serviceData }) {
         return __awaiter(this, void 0, void 0, function* () {
             let changedCtx = ctx;
             // rules type can be required, custom, hidden
