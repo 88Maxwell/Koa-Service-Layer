@@ -1,10 +1,8 @@
-/* eslint-disable no-param-reassign */
-import Service from "../src/Service";
-import ServiceLayer from "../src/ServiceLayer";
-import Exception from "../src";
+import ServiceLayer from "../../src/ServiceLayer";
 
-const testResolver = result => result;
-const koaArgumentBuilder = arrArgs => arrArgs[0];
+const testResolver = (result: any): any => result;
+const koaArgumentBuilder = (args: any[]): any => args[0];
+
 
 export const emptySL = new ServiceLayer(testResolver, koaArgumentBuilder);
 
@@ -51,23 +49,23 @@ export const customRulesSL = new ServiceLayer(testResolver, koaArgumentBuilder, 
     ]
 });
 
-export const unexistRuleTypeSL = new ServiceLayer(testResolver, koaArgumentBuilder, {
-    before: [
-        {
-            name: "test",
-            type: "wrongType",
-            execute: ctx => ctx
-        }
-    ]
-});
+// export const unexistRuleTypeSL = new ServiceLayer(testResolver, koaArgumentBuilder, {
+//     before: [
+//         {
+//             name: "test",
+//             type: "wrongType",
+//             execute: ctx => ctx
+//         }
+//     ]
+// });
 
-export const ruleWithMissedFieldSL = new ServiceLayer(testResolver, koaArgumentBuilder, {
-    before: [
-        {
-            execute: ctx => ctx
-        }
-    ]
-});
+// export const ruleWithMissedFieldSL = new ServiceLayer(testResolver, koaArgumentBuilder, {
+//     before: [
+//         {
+//             execute: ctx => ctx
+//         }
+//     ]
+// });
 
 export const customAfterRulesSL = new ServiceLayer(testResolver, koaArgumentBuilder, {
     after: [
@@ -124,49 +122,3 @@ export const requiredAfterRulesSL = new ServiceLayer(testResolver, koaArgumentBu
         }
     ]
 });
-
-export class EmptyService extends Service {
-    execute(ctx) {
-        return ctx;
-    }
-}
-
-export class RequiredRuleService extends Service {
-    static test = { testRequired: true };
-
-    execute(ctx) {
-        return ctx;
-    }
-}
-
-export class CustomRuleService extends Service {
-    static test = { testCustom: true };
-
-    execute(ctx) {
-        return ctx;
-    }
-}
-
-export class ExeptionRequiredRuleService extends Service {
-    execute(ctx) {
-        return ctx;
-    }
-}
-
-export class UnknownErrorService extends Service {
-    execute() {
-        // eslint-disable-next-line no-throw-literal
-        throw "";
-    }
-}
-
-export class ExeptionService extends Service {
-    execute() {
-        throw new Exception({
-            code: "TEST",
-            fields: {
-                test: "TEST"
-            }
-        });
-    }
-}

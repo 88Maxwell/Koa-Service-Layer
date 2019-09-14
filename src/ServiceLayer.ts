@@ -1,157 +1,56 @@
-import Exception from "./Exception";
-import {
-    unexistedRuleTypeExeption,
-    ruleIsRequiredExetion,
-    rulesExeption,
-    invalidArgumentExeption
-} from "./utils/exeptions";
-import { isFunction, deepClone } from "./utils/helpers";
-import Service from "./Service";
+// import ServiceClass from "./Service";
+import { rulesException } from "./utils/exeptions";
+import { Rule, RuleObject } from "./interfaces";
 
-type Dict = { [key: string]: Function };
+export default class Sl {
+    constructor(
+        private resolver: Function,
+        private argsBuilder: Function,
+        private rules: RuleObject = { before: [], after: [] }
+    ) {}
 
-type Type = "required" | "custom" | "hidden";
-
-interface Constructable<T> {
-    new (): T;
-}
-interface Rule {
-    name: string;
-    type: Type;
-    execute: Function;
-}
-
-interface RulesObject {
-    before: Array<Rule>;
-    after: Array<Rule>;
-}
-
-interface ExecuteRuleAruments {
-    rules: Array<Rule>;
-    ServiceClass: Dict;
-    ctx: object;
-    serviceData: object;
-}
-
-interface Exeption {
-    status: number;
-    fields: object;
-}
-declare class IServiceLayer {
-    public useService(ServiceClass: Service): any;
-
-    private executeRules(args: ExecuteRuleAruments): any;
-    private executeRule(rule: Rule, executeArgs: any): any;
-    private errorCatchHandler(error): Exeption;
-}
-
-export default class ServiceLayer {
-    private resolver: Function;
-    private argumentBuilder: Function;
-    private beforeRules: Array<Rule>;
-    private afterRules: Array<Rule>;
-
-    constructor(resolver: Function, argumentBuilder: Function, rules: RulesObject = { before: [], after: [] }) {
-        if (!isFunction(resolver)) throw invalidArgumentExeption("resolver");
-        if (!isFunction(argumentBuilder)) throw invalidArgumentExeption("argumentBuilder");
-
-        this.resolver = resolver;
-        this.argumentBuilder = argumentBuilder;
-        this.beforeRules = rules.before;
-        this.afterRules = rules.after;
-    }
-
-    public useService(ServiceClass: Constructable<Service>) {
-        // eslint-disable-next-line func-names
-        return async function(...args: Array<any>) {
-            const ctx = this.argumentBuilder(args);
-
+    useService(Service: any): Function {
+        return async (...middlewareArgs: Array<any>): Promise<any> => {
             let result;
-            const serviceData = {
-                startTime: Date.now(),
-                serviceName: ServiceClass.constructor.name
-            };
-            const executeRulesArgs = {
-                rules: this.beforeRules,
-                ServiceClass,
-                ctx,
-                serviceData
-            };
-
+            const ctx = this.argsBuilder(middlewareArgs);
             try {
-                const updatedContext = await this.executeRules(executeRulesArgs);
-                const service = new ServiceClass();
+                const serviceInstance = new Service();
+                const slData = {
+                    startTime: Date.now(),
+                    serviceName: Service.name
+                };
+                const updatedCtx = this.executeRules(this.rules.before || [], Service, ctx, slData);
+                result = serviceInstance.execute(updatedCtx);
+            } catch (error) {}
 
-                let data = await service.execute.call(ctx, updatedContext);
-
-                if (typeof data === "object") {
-                    data = Array.isArray(data) ? [...data] : { ...data };
-                }
-
-                result = { status: 200, data };
-
-                await this.executeRules({
-                    rules: this.afterRules,
-                    ServiceClass,
-                    ctx: updatedContext,
-                    serviceData: { ...serviceData, result: deepClone(result) }
-                });
-            } catch (error) {
-                result = this.errorCatchHandler(error);
-            }
-
-            return this.resolver.call(ctx, result);
-        }.bind(this);
+            return this.resolver(result);
+        };
     }
 
-    private async executeRules({ rules, ServiceClass, ctx, serviceData }: ExecuteRuleAruments) {
-        let changedCtx = ctx;
+    private async executeRules(rules: Rule[], Service: any, ctx: any, slData: object): Promise<any> {
+        let updatedCtx = ctx;
 
-        // rules type can be required, custom, hidden
-        if (rules) {
-            for (const rule of rules) {
-                const ruleArgs = ServiceClass[rule.name];
-                const executeArgs = [changedCtx, ruleArgs, serviceData];
+        for (const rule of rules) {
+            const ruleArgs = Service[rule.name];
 
-                changedCtx = await this.executeRule(rule, executeArgs);
+            switch (rule.type) {
+                case "custom":
+                    if (ruleArgs) break;
+
+                    updatedCtx = await rule.execute(updatedCtx, ruleArgs, slData);
+                    break;
+
+                case "hidden":
+                    updatedCtx = await rule.execute(updatedCtx, null, slData);
+                    break;
+
+                case "required":
+                    if (ruleArgs) throw rulesException();
+
+                    updatedCtx = await rule.execute(updatedCtx, ruleArgs, slData);
+                    break;
             }
         }
-    }
-
-    private executeRule = ({ name, execute, type }: Rule, executeArgs: any) => {
-        if (!name || !execute || !type) {
-            throw rulesExeption();
-        }
-
-        switch (type) {
-            case "hidden":
-                return execute(...executeArgs);
-
-            case "required":
-                if (!executeArgs[1]) {
-                    throw ruleIsRequiredExetion(name);
-                }
-
-                return execute(...executeArgs);
-
-            case "custom":
-                if (executeArgs[1]) {
-                    return execute(...executeArgs);
-                }
-
-                return executeArgs[0];
-
-            default:
-                throw unexistedRuleTypeExeption(type);
-        }
-    };
-
-    private errorCatchHandler(error: Error | Exception) {
-        if (error instanceof Exception) {
-            return { status: 500, error: error.toHash() };
-        }
-        console.log("SERVICE LAYER: \n\t", error);
-
-        return { status: 500, error: { code: "UNKNOWN_ERROR" } };
+        return updatedCtx;
     }
 }

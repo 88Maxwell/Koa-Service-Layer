@@ -1,24 +1,24 @@
 import Exception from "../Exception";
 
-export const unexistedRuleTypeExeption = (type: string) =>
+export const unexistedRuleTypeException = (type: string): Exception =>
     new Exception({
         code: "UNEXISTED_RULE_TYPE",
         fields: { type }
     });
 
-export const ruleIsRequiredExetion = (name: string) =>
+export const ruleIsRequiredException = (name: string): Exception =>
     new Exception({
         code: "RULE_IS_REQUIRED",
         fields: { rule: name }
     });
 
-export const rulesExeption = () =>
+export const rulesException = (): Exception =>
     new Exception({
-        code: "RULES_EXEPTION",
+        code: "RULES_EXCEPTION",
         fields: {}
     });
 
-export const invalidArgumentExeption = (argName: string) =>
+export const invalidArgumentException = (argName: string): Exception =>
     new Exception({
         code: "INVALID_ARGUMENTS",
         fields: {
