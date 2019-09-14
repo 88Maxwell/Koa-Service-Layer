@@ -1,10 +1,8 @@
-import { assert } from "chai";
+import chai from "chai";
 
 import {
     emptySL,
     customRulesSL,
-    // unexistRuleTypeSL,
-    // ruleWithMissedFieldSL,
     hiddenRulesWithServiceDataSL,
     customAfterRulesSL,
     customAfterRulesWithMutateResultSL,
@@ -22,7 +20,7 @@ import {
     CustomRuleService
 } from "../mocks/services";
 
-const { deepEqual, equal, isAtLeast } = assert;
+const { deepEqual, equal, isAtLeast } = chai.assert;
 
 suite("Service Layer Tests");
 
@@ -32,9 +30,9 @@ test("Positive : Is middleware ?", () => {
     equal(constructorName, "Function");
 });
 
-test.only("Positive : Run service", async () => {
+test("Positive : Run service", async () => {
     const res = await emptySL.useService(EmptyService)({});
-    console.log(res);
+
     deepEqual(res, { status: 200, data: {} });
 });
 
@@ -64,7 +62,6 @@ test("Positive : Run service, with hidden before rule that have service data obj
 
 test("Positive : Run service, with required before rule ", async () => {
     const res = await requiredRulesSL.useService(RequiredRuleService)({});
-
     deepEqual(res, { status: 200, data: { testRequired: true } });
 });
 
@@ -104,30 +101,6 @@ test("Positive : Run service, with required after rule ", async () => {
     deepEqual(res, { status: 200, data: {} });
 });
 
-// test("Negative : Run service, without some field in rule defining", async () => {
-//     const res = await ruleWithMissedFieldSL.useService(EmptyService)({});
-
-//     deepEqual(res, {
-//         status : 500,
-//         error  : {
-//             code   : "RULES_EXEPTION",
-//             fields : {}
-//         }
-//     });
-// });
-
-// test("Negative : Run service, with unexisted rule type ", async () => {
-//     const res = await unexistRuleTypeSL.useService(EmptyService)({});
-
-//     deepEqual(res, {
-//         status : 500,
-//         error  : {
-//             code   : "UNEXISTED_RULE_TYPE",
-//             fields : { type: "wrongType" }
-//         }
-
-//     });
-// });
 test("Negative : Run service, with required rule ", async () => {
     const res = await requiredRulesSL.useService(ExeptionRequiredRuleService)({});
 
@@ -148,6 +121,7 @@ test("Negative : Run service, UNKNOWN_ERROR", async () => {
 
 test("Negative : Run service, SL Exception", async () => {
     const res = await emptySL.useService(ExeptionService)({});
+    
     deepEqual(res, {
         status: 500,
         error: {

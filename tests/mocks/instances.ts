@@ -49,24 +49,6 @@ export const customRulesSL = new ServiceLayer(testResolver, koaArgumentBuilder, 
     ]
 });
 
-// export const unexistRuleTypeSL = new ServiceLayer(testResolver, koaArgumentBuilder, {
-//     before: [
-//         {
-//             name: "test",
-//             type: "wrongType",
-//             execute: ctx => ctx
-//         }
-//     ]
-// });
-
-// export const ruleWithMissedFieldSL = new ServiceLayer(testResolver, koaArgumentBuilder, {
-//     before: [
-//         {
-//             execute: ctx => ctx
-//         }
-//     ]
-// });
-
 export const customAfterRulesSL = new ServiceLayer(testResolver, koaArgumentBuilder, {
     after: [
         {
