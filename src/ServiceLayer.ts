@@ -19,22 +19,23 @@ export default class ServiceLayer {
             try {
                 const serviceInstance = new Service();
                 const slData = {
-                    startTime: Date.now(),
-                    serviceName: Service.name
+                    startTime   : Date.now(),
+                    serviceName : Service.name
                 };
 
                 const updatedCtx = await this.executeRules(this._rules.before || [], Service, ctx, slData);
 
                 let data = serviceInstance.execute(updatedCtx);
+
                 if (typeof data === "object") {
-                    data = Array.isArray(data) ? [...data] : { ...data };
+                    data = Array.isArray(data) ? [ ...data ] : { ...data };
                 }
 
                 result = { status: 200, data };
 
                 await this.executeRules(this._rules.after || [], Service, ctx, {
                     ...slData,
-                    result: deepClone(result)
+                    result : deepClone(result)
                 });
             } catch (error) {
                 result = this._handleCatch(error);
@@ -66,12 +67,15 @@ export default class ServiceLayer {
 
                     updatedCtx = await execute(updatedCtx, ruleArgs, slData);
                     break;
+                default:
+                    break;
             }
         }
+
         return updatedCtx;
     }
 
-    private _handleCatch(error: Error | Exception) {
+    private _handleCatch(error: Error | Exception): object {
         if (error instanceof Exception) {
             return { status: 500, error: error.toHash() };
         }

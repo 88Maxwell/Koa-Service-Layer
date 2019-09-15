@@ -27,8 +27,8 @@ export default class Exception extends Error {
 
     public toHash(): ToHash {
         return {
-            fields: this.fields,
-            code: this.code
+            fields : this.fields,
+            code   : this.code
         };
     }
 }

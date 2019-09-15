@@ -62,6 +62,7 @@ test("Positive : Run service, with hidden before rule that have service data obj
 
 test("Positive : Run service, with required before rule ", async () => {
     const res = await requiredRulesSL.useService(RequiredRuleService)({});
+
     deepEqual(res, { status: 200, data: { testRequired: true } });
 });
 
@@ -105,10 +106,10 @@ test("Negative : Run service, with required rule ", async () => {
     const res = await requiredRulesSL.useService(ExeptionRequiredRuleService)({});
 
     deepEqual(res, {
-        status: 500,
-        error: {
-            code: "RULE_IS_REQUIRED",
-            fields: { rule: "test" }
+        status : 500,
+        error  : {
+            code   : "RULE_IS_REQUIRED",
+            fields : { rule: "test" }
         }
     });
 });
@@ -121,12 +122,12 @@ test("Negative : Run service, UNKNOWN_ERROR", async () => {
 
 test("Negative : Run service, SL Exception", async () => {
     const res = await emptySL.useService(ExeptionService)({});
-    
+
     deepEqual(res, {
-        status: 500,
-        error: {
-            code: "TEST",
-            fields: { test: "TEST" }
+        status : 500,
+        error  : {
+            code   : "TEST",
+            fields : { test: "TEST" }
         }
     });
 });

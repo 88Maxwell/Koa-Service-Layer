@@ -12,6 +12,7 @@ export const renameKeys = (obj: Dict, fn: Function): object => {
         const val: any = obj[key];
         const str: string = fn(key, val);
 
+        // eslint-disable-next-line no-param-reassign
         if (str !== "") key = str;
 
         result[key] = val;

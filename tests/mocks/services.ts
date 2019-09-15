@@ -39,9 +39,9 @@ export class UnknownErrorService implements Service {
 export class ExeptionService implements Service {
     execute(): any {
         throw new Exception({
-            code: "TEST",
-            fields: {
-                test: "TEST"
+            code   : "TEST",
+            fields : {
+                test : "TEST"
             }
         });
     }

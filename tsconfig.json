@@ -7,9 +7,6 @@
         "moduleResolution": "node",
         "outDir": "build",
         "baseUrl": ".",
-        "paths": {
-            "*": ["node_modules/*", "src/types/*"]
-        },
         "noImplicitAny": true,
         "esModuleInterop": true,
         "resolveJsonModule": true,
@@ -19,5 +16,5 @@
         "noUnusedLocals": true,
         "sourceMap": false
     },
-    "include": ["src/**/*"]
+    "include": ["src"]
 }
